@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function isVerifiedOwner(userId) {
+      return isOwner(userId) && request.auth.token.email_verified == true;
+    }
+
+    function isText(field, maxLen) {
+      return field is string && field.size() <= maxLen;
+    }
+
+    function isRequiredText(field, maxLen) {
+      return isText(field, maxLen) && field.matches('.*\\S.*');
+    }
+
+    function validAvatarId(value) {
+      return value is string &&
+        (value == 'avatar_01' || value == 'avatar_02' ||
+         value == 'avatar_03' || value == 'avatar_04' ||
+         value == 'avatar_05' || value == 'avatar_06' ||
+         value == 'avatar_07' || value == 'avatar_08' ||
+         value == 'avatar_09' || value == 'avatar_10' ||
+         value == 'account_photo');
+    }
+
+    function validTask(data) {
+      return data.keys().hasOnly(['title', 'subject', 'description', 'deadline', 'status', 'created_at', 'updated_at'])
+        && data.keys().hasAll(['title', 'subject', 'description', 'deadline', 'status', 'created_at', 'updated_at'])
+        && isRequiredText(data.title, 300)
+        && isRequiredText(data.subject, 120)
+        && isText(data.description, 5000)
+        && data.deadline is timestamp
+        && (data.status == 'belum' ||
+            data.status == 'progress' ||
+            data.status == 'done')
+        && data.created_at is timestamp
+        && data.updated_at is timestamp;
+    }
+
+    function validProfileFields(data) {
+      return data.keys().hasOnly(['display_name', 'institution', 'major', 'avatar_id', 'setup_complete', 'updated_at'])
+        && (!data.keys().hasAny(['display_name']) || isText(data.display_name, 120))
+        && (!data.keys().hasAny(['institution']) || isText(data.institution, 150))
+        && (!data.keys().hasAny(['major']) || isText(data.major, 150))
+        && (!data.keys().hasAny(['avatar_id']) || validAvatarId(data.avatar_id))
+        && (!data.keys().hasAny(['setup_complete']) || data.setup_complete is bool)
+        && (!data.keys().hasAny(['updated_at']) || data.updated_at is timestamp)
+        && (!data.keys().hasAny(['setup_complete']) || data.setup_complete == false ||
+          (data.keys().hasAll(['display_name', 'institution', 'major', 'avatar_id', 'updated_at'])
+           && isRequiredText(data.display_name, 120)));
+    }
+
+    match /users/{userId} {
+      match /tasks/{taskId} {
+        allow read: if isVerifiedOwner(userId);
+        allow list: if isVerifiedOwner(userId);
+        allow delete: if isVerifiedOwner(userId);
+        allow create: if isVerifiedOwner(userId)
+          && validTask(request.resource.data)
+          && request.resource.data.deadline > request.time;
+        allow update: if isVerifiedOwner(userId)
+          && validTask(request.resource.data)
+          && request.resource.data.created_at == resource.data.created_at
+          && (request.resource.data.deadline == resource.data.deadline
+              || request.resource.data.deadline > request.time);
+      }
+
+      match /profile/info {
+        allow read: if isVerifiedOwner(userId);
+        allow create, update: if isVerifiedOwner(userId)
+          && validProfileFields(request.resource.data);
+        allow delete: if false;
+      }
+    }
+  }
+}
