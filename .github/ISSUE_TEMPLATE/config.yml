@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/muhamaddikrulloh/takumi/security/policy
+    about: Report a vulnerability privately. Do not open a public issue.
+  - name: Firebase setup questions
+    url: https://github.com/muhamaddikrulloh/takumi/blob/dev/docs/FIREBASE_SETUP.md
+    about: Configure your own Firebase project before asking about sign-in or Firestore errors.

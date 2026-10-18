@@ -1,0 +1,65 @@
+name: Bug report
+description: Report a reproducible defect in Takumi
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Do **not** include credentials, personal data, or
+        unpatched vulnerabilities here — see the [security policy](https://github.com/muhamaddikrulloh/takumi/security/policy)
+        for private reporting.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One or two sentences describing the defect.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps starting from a fresh app state.
+      placeholder: |
+        1. Sign in with a verified account
+        2. Create a task due in 1 hour
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include error text, screenshots, or logs if available.
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Revision or tag
+      description: Commit SHA or release tag where the defect appears.
+      placeholder: "e.g. 79d9741"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and OS
+      description: Android model, Android version, and whether it is an emulator.
+      placeholder: "e.g. Pixel 7, Android 14, physical"
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Related PRs, prior issues, or anything else useful.
+    validations:
+      required: false

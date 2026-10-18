@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose a new capability or improvement for Takumi
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem you want solved. Takumi is scoped to student
+        coursework management with Firebase-backed, per-account isolation.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What is hard or impossible today? Who is affected?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What should the app do differently?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you evaluated, and why they fell short.
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Mockups, links, or related issues.
+    validations:
+      required: false
