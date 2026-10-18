@@ -8,7 +8,7 @@ distribution.
 
 | Asset group | Location | Status |
 | --- | --- | --- |
-| Takumi app logo | `assets/images/app_logo.png` | Created by Muhammad Dikrulloh. All rights reserved. Licensed for use solely within this project and its official distributions; not relicensed under MIT. |
+| Takumi app logo | `assets/images/app_logo.png`, `docs/assets/logo.png` | Created by Muhammad Dikrulloh. All rights reserved. Licensed for use solely within this project and its official distributions; not relicensed under MIT. |
 | Android launcher and splash artwork | `android/app/src/main/res/mipmap-*/`, `drawable-nodpi/launch_image.png` | Variants of the app logo created by Muhammad Dikrulloh. Covered under the same project-use license as the app logo. |
 | Google sign-in mark | `assets/images/google_logo.png` | Google trademark. The downloaded file's source is not recorded. Review it and the sign-in button against Google's current [branding guidelines](https://developers.google.com/identity/branding-guidelines); it is not MIT artwork. |
 | Notification icon | `android/app/src/main/res/drawable/ic_notification.xml` | Clock-shaped vector with no recorded author/source. Confirm its origin and any required notice. |

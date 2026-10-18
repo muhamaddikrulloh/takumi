@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="assets/images/app_logo.png" width="96" alt="Takumi Logo" />
+  <img src="docs/assets/logo.png" width="160" alt="Takumi Logo" />
 </p>
 
 <h1 align="center">Takumi</h1>
 
-<p align="center">Coursework, deadlines, and smart reminders in one place.</p>
+<p align="center">A distraction-free coursework and deadline planner for Android.</p>
 
 <p align="center">
   <a href="https://www.android.com/"><img src="https://img.shields.io/badge/platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Platform: Android" /></a>
@@ -15,27 +15,28 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-7A5AF8?style=flat-square" alt="License: MIT" /></a>
 </p>
 
-Takumi is an open-source Android application designed for students and self-learners to track coursework, deadlines, and academic priorities. It combines a structured task manager, interactive calendar, cloud synchronization, and reliable local reminders inside a focused dark glass interface.
+Takumi is an open-source Android app built with Flutter to help students organize assignments, track academic deadlines, and schedule reminders in one unified place.
 
 ---
 
 ## Overview
 
-Managing assignments across multiple classes often leads to fragmented notes and missed deadlines. Takumi provides a centralized, distraction-free environment to track what needs to be done next.
+Balancing assignments across different courses often leads to forgotten deadlines and scattered notes. Takumi provides a dedicated mobile workspace to track academic priorities with a dark glass theme:
 
-- **Fast & Responsive**: Built with Flutter and Riverpod for snappy state management and smooth interactions.
-- **Offline Capable**: Works without interruption during network dropouts; data syncs automatically with Cloud Firestore once back online.
-- **Privacy Centric**: Strict per-user isolation enforced through security rules, with full transparency on stored attributes.
+- **Focused Task Tracking**: Organize coursework with deadline dates, status tags, and priority levels.
+- **Calendar Visualization**: View upcoming due dates on a monthly calendar grid with daily task listings.
+- **Offline Caching**: Tasks and profile data are cached locally on device via Cloud Firestore offline persistence, queuing writes until network connectivity is restored.
+- **Scheduled Notifications**: Multi-interval reminder alerts before each assignment deadline, using Android exact alarms when permitted.
 
 ## Features
 
-- **Authentication & Security**: Email/password registration with mandatory verification, Google Sign-In, and rate-limited password recovery.
-- **Profile Customization**: Display name, custom visual avatar, and optional academic metadata (major, campus, student ID).
-- **Coursework Management**: Create, view, update, search, filter (by status and priority), and complete tasks.
-- **Deadline Calendar**: Interactive calendar view highlighting upcoming assignment milestones by date.
-- **Multi-Stage Reminders**: Local scheduled notifications delivered at 72h, 24h, 12h, 3h prior to deadline, and at due time, with exact alarm support and graceful inexact fallback.
-- **Offline Persistence**: Cloud Firestore cache integration keeps current data accessible without an internet connection.
-- **Bilingual Interface**: Full localization support for both Indonesian (`id`) and English (`en`).
+- **Authentication & Security**: Email/password registration with email verification, Google Sign-In, and password reset protected by a progressive client-side cooldown (up to 5 requests per hour).
+- **Coursework Management**: Create, edit, search, filter (by status and priority), and mark assignments as completed.
+- **Deadline Calendar**: Interactive calendar view highlighting due dates, with instant filtering for selected days.
+- **Multi-Stage Reminders**: Local reminder alerts scheduled at 72h, 24h, 12h, and 3h before a deadline, plus at the due time. Exact alarm scheduling is requested when supported, falling back to standard scheduling based on device power management and Android permissions.
+- **Offline Persistence**: Cloud Firestore cache (up to 100 MB local cache) allows browsing and updating tasks without an active connection. Network access is required for initial sign-in and remote sync.
+- **Profile & Identity**: Profile customization with display name, customizable avatar artwork, and optional academic information (institution, major, student ID).
+- **Bilingual Interface**: Full localization support for both English (`en`) and Indonesian (`id`), respecting device preferences with in-app switching.
 
 ## Screenshots
 
@@ -50,22 +51,22 @@ Managing assignments across multiple classes often leads to fragmented notes and
 
 Pre-built APK binaries are not yet published for this repository.
 
-Official releases will be distributed via [GitHub Releases](https://github.com/muhamaddikrulloh/takumi/releases) once signed production builds are ready. To try the app right now, build from source using the instructions below.
+Signed production builds will be published under [GitHub Releases](https://github.com/muhamaddikrulloh/takumi/releases) once available. In the meantime, you can build and run the app from source using the instructions below.
 
 <!-- Replace status above with release download links once published. -->
 
 ## Tech Stack
 
-| Component | Technology |
+| Layer | Technology |
 | --- | --- |
-| Runtime & Target | Flutter (Dart SDK `^3.13.2`), Android SDK (API 21+) |
+| Platform & SDK | Android (minSdk 21), Flutter 3.47.2, Dart SDK `^3.13.2` |
 | State Management | Flutter Riverpod 2.6 (`AsyncNotifier`) |
 | Authentication | Firebase Authentication, Google Sign-In |
-| Cloud Database | Cloud Firestore with offline disk persistence |
+| Database | Cloud Firestore with offline disk persistence |
 | Notifications | `flutter_local_notifications`, `timezone`, `flutter_timezone` |
-| Local Preferences | `shared_preferences` |
+| Local Storage | `shared_preferences` |
 | Calendar View | `table_calendar` |
-| Typography & Icons | Google Fonts (Plus Jakarta Sans), Phosphor Icons |
+| UI & Typography | Google Fonts (Plus Jakarta Sans), Phosphor Icons |
 
 ## Getting Started
 
@@ -73,7 +74,7 @@ Official releases will be distributed via [GitHub Releases](https://github.com/m
 
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) pinned to **3.47.2** (Dart `^3.13.2`).
 - Android SDK with JDK 21 configured.
-- An Android device or emulator running API 21 or higher.
+- An Android device or emulator running Android 5.0 (API 21) or higher.
 - A Firebase project configured for Android (see [Configuration](#configuration)).
 
 ### Installation & Run
@@ -89,10 +90,7 @@ Official releases will be distributed via [GitHub Releases](https://github.com/m
    flutter pub get
    ```
 
-3. Configure Firebase by placing your `google-services.json` into `android/app/`:
-   ```text
-   android/app/google-services.json
-   ```
+3. Place your Firebase Android configuration file at `android/app/google-services.json`.
 
 4. Launch on a connected device:
    ```bash
@@ -140,7 +138,7 @@ flutter analyze
 flutter test
 ```
 
-### Visual Review Harness
+### Visual Preview Harness
 
 To render screen previews to disk for visual inspection:
 
@@ -150,7 +148,7 @@ flutter test test/visual_review_test.dart --dart-define=RENDER_REVIEW=true
 
 Output screenshots will be written to `build/visual_review/`.
 
-### Firestore Rules Unit Tests
+### Firestore Security Rules Testing
 
 Test security rules against local emulators (requires Node 22 and Java 21):
 
@@ -169,7 +167,7 @@ All participants are expected to adhere to the [Code of Conduct](CODE_OF_CONDUCT
 
 - **Security Disclosures**: Review [SECURITY.md](SECURITY.md) to report vulnerabilities privately.
 - **Privacy Policy**: See [PRIVACY.md](PRIVACY.md) for data handling and account management guidelines.
-- **Asset Provenance**: Review [ASSET_LICENSES.md](docs/ASSET_LICENSES.md) for trademark notices and artwork licensing details.
+- **Asset Licenses**: Review [ASSET_LICENSES.md](docs/ASSET_LICENSES.md) for trademark notices and artwork licensing details.
 
 ## License
 
