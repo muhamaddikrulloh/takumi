@@ -35,20 +35,52 @@ class _FakeFirebaseAuth extends Fake implements FirebaseAuth {
   }
 }
 
+class _FakeGoogleSignInAccount extends Fake implements GoogleSignInAccount {
+  _FakeGoogleSignInAccount({this.idToken = 'test-id-token'});
+
+  final String? idToken;
+
+  @override
+  GoogleSignInAuthentication get authentication =>
+      GoogleSignInAuthentication(idToken: idToken);
+}
+
 class _FakeGoogleSignIn extends Fake implements GoogleSignIn {
   Object? signOutError;
-  GoogleSignInAccount? signInResult;
+  Object? authenticateError;
+  GoogleSignInAccount? authenticateResult;
   bool signOutCalled = false;
+  bool initializeCalled = false;
 
   @override
-  Future<GoogleSignInAccount?> signIn() async => signInResult;
+  Future<void> initialize({
+    String? clientId,
+    String? serverClientId,
+    String? nonce,
+    String? hostedDomain,
+  }) async {
+    initializeCalled = true;
+  }
 
   @override
-  Future<GoogleSignInAccount?> signOut() async {
+  Future<GoogleSignInAccount> authenticate({
+    List<String> scopeHint = const <String>[],
+  }) async {
+    final error = authenticateError;
+    if (error != null) throw error;
+    final result = authenticateResult;
+    if (result != null) return result;
+    throw const GoogleSignInException(
+      code: GoogleSignInExceptionCode.canceled,
+      description: 'User canceled sign-in',
+    );
+  }
+
+  @override
+  Future<void> signOut() async {
     signOutCalled = true;
     final error = signOutError;
     if (error != null) throw error;
-    return null;
   }
 }
 
@@ -111,6 +143,19 @@ void main() {
       expect(auth.credentialSignInCalled, isFalse);
     },
   );
+
+  test('Google sign-in passes ID token to Firebase credential', () async {
+    final auth = _FakeFirebaseAuth();
+    final google = _FakeGoogleSignIn()
+      ..authenticateResult = _FakeGoogleSignInAccount(idToken: 'valid-token');
+    final repository = AuthRepository(auth: auth, googleSignIn: google);
+
+    await expectLater(
+      repository.signInWithGoogle(),
+      throwsA(isA<StateError>()),
+    );
+    expect(auth.credentialSignInCalled, isTrue);
+  });
 
   test(
     'logout keeps Firebase sign-out successful if Google cleanup fails',

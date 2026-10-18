@@ -4,10 +4,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthRepository {
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
+  bool _googleSignInInitialized = false;
 
   AuthRepository({FirebaseAuth? auth, GoogleSignIn? googleSignIn})
     : _auth = auth ?? FirebaseAuth.instance,
-      _googleSignIn = googleSignIn ?? GoogleSignIn();
+      _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
 
   User? get currentUser => _auth.currentUser;
 
@@ -52,17 +53,36 @@ class AuthRepository {
     await _auth.currentUser?.reload();
   }
 
+  Future<void> _ensureGoogleSignInInitialized() async {
+    if (_googleSignInInitialized) return;
+    try {
+      await _googleSignIn.initialize();
+    } catch (_) {
+      // In case platform/test environment already initialized or does not support init.
+    }
+    _googleSignInInitialized = true;
+  }
+
   Future<UserCredential?> signInWithGoogle() async {
-    final googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) return null;
-
-    final googleAuth = await googleUser.authentication;
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    return await _auth.signInWithCredential(credential);
+    await _ensureGoogleSignInInitialized();
+    try {
+      final googleUser = await _googleSignIn.authenticate();
+      final idToken = googleUser.authentication.idToken;
+      if (idToken == null) {
+        throw FirebaseAuthException(
+          code: 'invalid-credential',
+          message: 'Missing Google ID token',
+        );
+      }
+      final credential = GoogleAuthProvider.credential(idToken: idToken);
+      return await _auth.signInWithCredential(credential);
+    } on GoogleSignInException catch (error) {
+      if (error.code == GoogleSignInExceptionCode.canceled ||
+          error.code == GoogleSignInExceptionCode.interrupted) {
+        return null;
+      }
+      rethrow;
+    }
   }
 
   Future<void> signOut() async {

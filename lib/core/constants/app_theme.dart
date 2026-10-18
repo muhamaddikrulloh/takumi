@@ -11,7 +11,8 @@ class AppTheme {
 
   static ThemeData _build() {
     const p = AppPalette.dark;
-    final textTheme = GoogleFonts.plusJakartaSansTextTheme().apply(
+    final textTheme = ThemeData.dark().textTheme.apply(
+      fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
       bodyColor: p.textPrimary,
       displayColor: p.textPrimary,
     );
