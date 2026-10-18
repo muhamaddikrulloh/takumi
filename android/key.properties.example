@@ -1,0 +1,8 @@
+# Copy to android/key.properties and replace every placeholder locally.
+# Never commit the real key.properties file or keystore.
+# Keep the keystore outside the repository. Use an absolute path and forward
+# slashes on Windows, for example C:/private/takumi-release.jks.
+storePassword=change-me
+keyPassword=change-me
+keyAlias=your-key-alias
+storeFile=/absolute/path/outside/repository/takumi-release.jks
