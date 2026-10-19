@@ -49,11 +49,14 @@ Balancing assignments across different courses often leads to forgotten deadline
 
 ## Download
 
-Pre-built APK binaries are not yet published for this repository.
+Get the latest stable release of **Takumi** for Android.
 
-Signed production builds will be published under [GitHub Releases](https://github.com/muhamaddikrulloh/takumi/releases) once available. In the meantime, you can build and run the app from source using the instructions below.
+### [Download Takumi v1.0.0](https://github.com/muhamaddikrulloh/takumi/releases/tag/v1.0.0)
 
-<!-- Replace status above with release download links once published. -->
+Download the APK from the **Assets** section of the release page, then install it on your Android device.
+
+> **Platform:** Android 7.0 (API 24) or later  
+> Takumi is currently distributed through GitHub Releases.
 
 ## Tech Stack
 
